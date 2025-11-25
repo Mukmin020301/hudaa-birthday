@@ -1,343 +1,44 @@
 <!doctype html>
 <html lang="ms">
+
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Hudaa — A Little Birthday Card</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Hudaa — A Little Birthday Card</title>
 
-<!-- Google font -->
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
-
-<style>
-  :root{
-    --bg: #FFE9EE;
-    --card-bg: #ffffff;
-    --accent: #ff86a8;
-    --muted: #6b6b6b;
-    --max-w: 420px;
-  }
-
-  *{box-sizing:border-box}
-  html,body{height:100%}
-  body{
-    margin:0;
-    font-family:'Poppins',sans-serif;
-    background:linear-gradient(180deg,var(--bg),#fff 60%);
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    padding:24px;
-    color:#222;
-  }
-
-  .card{
-    width:100%;
-    max-width:var(--max-w);
-    background:var(--card-bg);
-    border-radius:18px;
-    padding:18px;
-    box-shadow:0 12px 30px rgba(0,0,0,.08);
-    text-align:center;
-    position:relative;
-    overflow:hidden;
-  }
-
-  h1{
-    margin:6px 0 8px;
-    font-size:20px;
-    letter-spacing:.2px;
-  }
-
-  .subtitle{font-size:13px;color:var(--muted);margin-bottom:12px}
-
-  /* message area */
-  .message{
-    text-align:center;
-    min-height:120px;
-    padding:12px;
-    border-radius:12px;
-    background:linear-gradient(180deg,rgba(255,245,247,.9),rgba(255,250,251,.95));
-    border:1px solid rgba(255,200,210,.6);
-    margin-bottom:12px;
-    font-size:15px;
-    line-height:1.45;
-    color:#2d2d2d;
-  }
-
-  .line{opacity:0; margin:10px 0;}
-  .line.show{opacity:1; transform:none; transition:opacity .4s ease,transform .4s ease}
-  .line.chars{transform:translateY(6px)}
-
-  /* polaroid */
-  .polaroid-wrap{
-    display:flex;
-    justify-content:center;
-    margin-top:8px;
-    margin-bottom:10px;
-    perspective:800px;
-  }
-  .polaroid{
-    width:84%;
-    max-width:300px;
-    background:#fff;
-    border-radius:12px;
-    padding:10px;
-    box-shadow:0 10px 22px rgba(255,120,150,.14);
-    transform-origin:center;
-    transform:rotate(-3deg);
-    transition:transform .45s cubic-bezier(.2,.9,.25,1),box-shadow .35s ease;
-  }
-  .polaroid.center{transform:rotate(0deg) scale(1.01)}
-  .polaroid img{
-    width:100%;
-    display:block;
-    border-radius:8px;
-    user-select:none;
-  }
-  .caption{font-size:13px;color:var(--muted);margin-top:8px;text-align:center}
-
-  /* controls */
-  .controls{
-    display:flex;
-    gap:8px;
-    justify-content:center;
-    margin-top:8px;
-  }
-  button{
-    background:transparent;
-    border:1px solid rgba(0,0,0,.08);
-    padding:8px 12px;
-    border-radius:10px;
-    cursor:pointer;
-    font-weight:600;
-    transition:transform .15s ease,box-shadow .15s ease,background .15s;
-  }
-  button:active{transform:translateY(2px)}
-  .primary{
-    background:linear-gradient(90deg,var(--accent),#ff6fa1);
-    color:white;
-    border:none;
-    box-shadow:0 6px 18px rgba(255,110,150,.18);
-  }
-  .ghost{background:transparent}
-
-  /* final text and confetti anchor */
-  #finalText{
-    opacity:0;
-    margin-top:12px;
-    font-weight:700;
-    transition:opacity .6s ease;
-    font-size:15px;
-    text-align:center;
-  }
-</style>
+  <!-- Google font -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/png" href="image_1.png">
+  <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 
-<div class="card" role="region" aria-label="Birthday card for Hudaa">
-  <h1>Hudaa ✨</h1>
-  <div class="subtitle">Happy Birthday Hudaa</div>
+  <div class="card" role="region" aria-label="Birthday card for Hudaa">
+    <h1>Hudaa ✨</h1>
+    <div class="subtitle">Happy Birthday Hudaa</div>
 
-  <div class="message" id="message" aria-live="polite"></div>
+    <div class="message" id="message" aria-live="polite"></div>
 
-  <div class="polaroid-wrap">
-    <div class="polaroid" id="polaroid">
-      <img id="sticker" src="image_1.png" alt="Photo 1">
-      <div class="caption" id="caption">Still here with each other</div>
+    <div class="polaroid-wrap">
+      <!-- Polaroids will be injected here by JS -->
     </div>
+
+    <div class="controls">
+      <button id="prev" class="ghost" hidden>◀</button>
+      <button id="next" class="primary">Tap for more ✨</button>
+    </div>
+
+    <div id="finalText">I don’t promise a smooth life. I promise a life we handle together.
+      And happy birthday… this is just the first one I get to celebrate with you.
+
+      That’s all.</div>
   </div>
 
-  <div class="controls">
-    <button id="prev" class="ghost" hidden>◀</button>
-    <button id="next" class="primary">Tap for more ✨</button>
-  </div>
+  <canvas id="confettiCanvas"
+    style="position:fixed;left:0;top:0;pointer-events:none;z-index:9999;display:none"></canvas>
 
-  <div id="finalText">I don’t promise a smooth life. I promise a life we handle together.
-And happy birthday… this is just the first one I get to celebrate with you.
-
-That’s all.</div>
-</div>
-
-<audio id="chime" src="data:audio/mp3;base64,//uQxAAAAAAAAAAAAAAAAAAAA..."></audio>
-<canvas id="confettiCanvas" style="position:fixed;left:0;top:0;pointer-events:none;z-index:9999;display:none"></canvas>
-
-<script>
-/* New honest AF lines */
-const lines = [
-  "Funny how someone I never met can feel more real than people in front of me.",
-  "You read text. I read the person behind the text.",
-  "We argue. We misread. But we still choose to stay. That matters.",
-  "I don’t know your voice. But I know your silence.",
-  "If your smile is anything like the way you care… I’m already gone.",
-  "You overthink a lot. Min overthinks losing you.",
-  "Not perfect. Not easy. Still worth it.",
-  "Distance tests people. We’re still here.",
-  "Three years isn’t long when the end point is home.",
-  "When I finally see you laugh… that’s the day this waiting makes sense."
-];
-
-const stickers = [
-  "image_1.png","image_2.png","image_3.png","image_4.png","image_5.png",
-  "image_6.png","image_7.png","image_8.png","image_9.png","image_10.png"
-];
-
-const captions = [
-  "Still here with each other",
-  "Even when it’s messy",
-  "We keep trying",
-  "That’s what matters",
-  "Closer than distance thinks",
-  "We make it work",
-  "You’re worth the effort",
-  "I choose you",
-  "Every single time",
-  "This is only the start"
-];
-
-const messageEl = document.getElementById('message');
-const polaroid = document.getElementById('polaroid');
-const stickerEl = document.getElementById('sticker');
-const captionEl = document.getElementById('caption');
-const nextBtn = document.getElementById('next');
-const prevBtn = document.getElementById('prev');
-const finalText = document.getElementById('finalText');
-const chime = document.getElementById('chime');
-const confettiCanvas = document.getElementById('confettiCanvas');
-
-function createLineElement(text){
-  const el = document.createElement('div');
-  el.className = 'line chars';
-  el.style.whiteSpace = 'pre-wrap';
-  el.style.textAlign = 'center';
-  messageEl.appendChild(el);
-  return el;
-}
-
-function typeTextInto(el,text,speed=27){
-  return new Promise(resolve=>{
-    el.textContent="";
-    let i=0;
-    const step=()=>{
-      if(i<=text.length){
-        el.textContent=text.slice(0,i);
-        i++;
-        setTimeout(step,speed);
-      } else {
-        el.classList.add('show');
-        resolve();
-      }
-    }; step();
-  });
-}
-
-async function runSequence(){
-  messageEl.innerHTML="";
-  for(let i=0;i<lines.length;i++){
-    const ln = createLineElement(lines[i]);
-    await typeTextInto(ln, lines[i], 27);
-    await new Promise(r=>setTimeout(r,250));
-    if(i===0){
-      polaroid.classList.add('center');
-      setTimeout(()=>polaroid.classList.remove('center'),700);
-    }
-  }
-  nextBtn.disabled=false;
-}
-
-let idx=0;
-function showIndex(i){
-  idx=i;
-  stickerEl.src=stickers[idx];
-  captionEl.textContent=captions[idx];
-  prevBtn.hidden = idx===0;
-}
-
-nextBtn.addEventListener('click',()=>{
-  if(idx<stickers.length-1){
-    idx++;
-    showIndex(idx);
-    polaroid.style.transform='rotate(3deg) scale(1.01)';
-    setTimeout(()=>polaroid.style.transform='',220);
-  } else finishSequence();
-});
-
-prevBtn.addEventListener('click',()=>{
-  if(idx>0){
-    idx--;
-    showIndex(idx);
-  }
-});
-
-let finished=false;
-function finishSequence(){
-  if(finished) return;
-  finished=true;
-  nextBtn.disabled=true;
-  prevBtn.hidden=true;
-  finalText.style.opacity=1;
-
-  try{chime.play().catch(()=>{});}catch(e){}
-  startConfetti();
-  polaroid.style.boxShadow='0 20px 46px rgba(255,70,130,.18)';
-}
-
-/* Confetti preserved */
-function startConfetti(){
-  confettiCanvas.width = window.innerWidth;
-  confettiCanvas.height = window.innerHeight;
-  confettiCanvas.style.display='block';
-
-  const ctx = confettiCanvas.getContext('2d');
-  const pieces = [];
-  const colors = ['#ff6fa1','#ffd1e0','#ff9abb','#ffd59f','#fff3f6'];
-
-  for(let i=0;i<90;i++){
-    pieces.push({
-      x:Math.random()*confettiCanvas.width,
-      y:Math.random()*confettiCanvas.height - confettiCanvas.height,
-      w:6+Math.random()*10,
-      h:6+Math.random()*8,
-      vx:-2+Math.random()*4,
-      vy:2+Math.random()*6,
-      color:colors[Math.floor(Math.random()*colors.length)],
-      rot:Math.random()*360,
-      rotSpeed:-6+Math.random()*12,
-      life:120+Math.random()*110
-    });
-  }
-
-  function frame(){
-    ctx.clearRect(0,0,confettiCanvas.width,confettiCanvas.height);
-    for(let p of pieces){
-      p.x+=p.vx;
-      p.y+=p.vy;
-      p.rot+=p.rotSpeed;
-      p.vy+=0.06;
-      p.life--;
-      ctx.save();
-      ctx.translate(p.x,p.y);
-      ctx.rotate(p.rot*Math.PI/180);
-      ctx.fillStyle=p.color;
-      ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h);
-      ctx.restore();
-    }
-    const alive = pieces.filter(p=>p.life>0);
-    if(alive.length===0){
-      confettiCanvas.style.display='none';
-      return;
-    }
-    requestAnimationFrame(frame);
-  }
-  frame();
-}
-
-window.addEventListener('load',()=>{
-  nextBtn.disabled=true;
-  prevBtn.hidden=true;
-  finalText.style.opacity=0;
-  showIndex(0);
-  runSequence();
-});
-</script>
+  <script src="script.js"></script>
 </body>
+
 </html>
